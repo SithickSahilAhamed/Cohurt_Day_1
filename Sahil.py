@@ -22,9 +22,9 @@ class LinkedList:
         while curr:
             print(curr.data, end=" -> ")
             curr = curr.next
-        print("None")
+        print("0")
 
 ll = LinkedList()
 ll.append(10)
 ll.append(20)
-ll.print_list()  # Output: 10 -> 20 -> None
+ll.print_list()  # Output: 10 -> 20 -> 0
