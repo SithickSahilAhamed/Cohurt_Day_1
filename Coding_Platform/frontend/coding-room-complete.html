@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CodeBattle - Real-time Multiplayer Coding Arena with Live Leaderboard">
+    <title>Coding Arena - CodeBattle</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" href="public/favicon.svg" type="image/svg+xml">
+    
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/coding-room.css">
+    
+    <!-- Monaco Editor CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    
+    <style>
+        /* Inline critical styles to prevent FOUC */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a2e;
+            color: #e0e0e0;
+        }
+
+        #monacoEditorContainer {
+            width: 100%;
+            height: 100%;
+            font-family: 'Courier New', monospace;
+        }
+
+        .fallback-editor {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            background: #0d1117;
+            color: #e0e0e0;
+            border: none;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: none;
+            display: none;
+        }
+
+        @keyframes pulse-accent {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .player-row-highlight {
+            animation: pulse-accent 1s ease-in-out;
+            background: rgba(79, 70, 229, 0.1) !important;
+        }
+
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 13px;
+            color: #1a1a2e;
+            min-width: 32px;
+        }
+
+        .rank-badge.first { background: #FFD700; box-shadow: 0 0 12px rgba(255, 215, 0, 0.3); }
+        .rank-badge.second { background: #C0C0C0; box-shadow: 0 0 12px rgba(192, 192, 192, 0.3); }
+        .rank-badge.third { background: #CD7F32; box-shadow: 0 0 12px rgba(205, 127, 50, 0.3); }
+        .rank-badge.other { background: #4F46E5; color: #fff; }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: #4F46E5;
+            box-shadow: 0 0 10px #4F46E5;
+        }
+
+        .status-dot.disconnected {
+            background: #888;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ========== TOP BAR ========== -->
+<div class="coding-top-bar">
+    <div class="top-bar-left">
+        <a href="dashboard.html" class="back-link-compact" title="Back to Dashboard">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M12 2L4 8L12 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Dashboard
+        </a>
+        <div class="problem-header">
+            <h2 id="problemTitle" class="current-problem">Two Sum</h2>
+            <span class="tournament-badge" id="tournamentName">Quick Contest</span>
+        </div>
+    </div>
+
+    <div class="top-bar-center">
+        <div class="countdown-timer">
+            <span class="timer-value" id="contestTimer">02:00:00</span>
+            <span class="timer-label">Time Remaining</span>
+        </div>
+    </div>
+
+    <div class="top-bar-right">
+        <div class="connection-status">
+            <span class="status-dot disconnected" id="statusDot"></span>
+            <span id="connectionText">Connecting...</span>
+        </div>
+        <div class="code-stats">
+            <span class="stat-item">Lines: <span id="codeLines">0</span></span>
+            <span class="stat-item">Chars: <span id="codeChars">0</span></span>
+        </div>
+    </div>
+</div>
+
+<!-- ========== MAIN CODING ARENA ========== -->
+<div class="coding-arena">
+    
+    <!-- LEFT PANEL: Problem Statement -->
+    <section class="problem-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M2 2h12v12H2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M4 6h8M4 9h8M4 12h5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+                </svg>
+                Problem
+            </h3>
+            <div class="panel-controls">
+                <button class="icon-btn" id="problemCollapseBtn" title="Collapse Problem Panel">−</button>
+            </div>
+        </div>
+
+        <div class="problem-content">
+            <!-- Problem Meta -->
+            <div class="problem-meta">
+                <span class="badge difficulty" id="problemDifficulty" data-difficulty="easy">Easy</span>
+                <span class="badge acceptance" id="problemAcceptance">75% Pass Rate</span>
+                <span class="badge solved" id="problemSolvedCount">1.2M Solved</span>
+            </div>
+
+            <!-- Description Section -->
+            <div class="problem-section">
+                <h4 class="section-title">Description</h4>
+                <div id="problemDescription" class="problem-text">
+                    Given an array of integers nums and an integer target, return the indices of the two numbers that add up to target. You may assume that each input has exactly one solution, and you may not use the same element twice.
+                </div>
+            </div>
+
+            <!-- Input/Output -->
+            <div class="problem-section">
+                <h4 class="section-title">Input Format</h4>
+                <div id="problemInput" class="problem-text">
+                    An array of integers and a target integer
+                </div>
+            </div>
+
+            <div class="problem-section">
+                <h4 class="section-title">Output Format</h4>
+                <div id="problemOutput" class="problem-text">
+                    Two indices of numbers that sum to target
+                </div>
+            </div>
+
+            <!-- Constraints -->
+            <div class="problem-section">
+                <h4 class="section-title">Constraints</h4>
+                <div id="problemConstraints" class="problem-text">
+                    2 ≤ nums.length ≤ 10⁴<br>
+                    -10⁹ ≤ nums[i] ≤ 10⁹<br>
+                    Only one valid answer exists
+                </div>
+            </div>
+
+            <!-- Examples -->
+            <div class="problem-section">
+                <h4 class="section-title">Examples</h4>
+                <div id="examplesContainer">
+                    <div class="example-item">
+                        <div class="example-label">Example 1:</div>
+                        <div class="example-code">Input: nums = [2,7,11,15], target = 9</div>
+                        <div class="example-code">Output: [0,1]</div>
+                        <div class="example-explain">Explanation: nums[0] + nums[1] == 9</div>
+                    </div>
+                    <div class="example-item">
+                        <div class="example-label">Example 2:</div>
+                        <div class="example-code">Input: nums = [3,2,4], target = 6</div>
+                        <div class="example-code">Output: [1,2]</div>
+                        <div class="example-explain">Explanation: nums[1] + nums[2] == 6</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CENTER PANEL: Code Editor -->
+    <section class="editor-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M3 6l3-3 3 3M10 6l3-3 3 3M2 10h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Code Editor
+            </h3>
+            <select id="languageSelect" class="language-selector">
+                <option value="javascript">JavaScript</option>
+                <option value="python">Python</option>
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
+                <option value="typescript">TypeScript</option>
+                <option value="csharp">C#</option>
+                <option value="go">Go</option>
+                <option value="rust">Rust</option>
+            </select>
+        </div>
+
+        <!-- Editor Container -->
+        <div class="editor-wrapper">
+            <div id="monacoEditorContainer"></div>
+            <textarea id="codeEditorFallback" class="fallback-editor"></textarea>
+
+            <!-- Loading State -->
+            <div id="editorLoading" class="loading-spinner">
+                <div class="spinner"></div>
+                <span>Initializing editor...</span>
+            </div>
+        </div>
+
+        <!-- Editor Footer -->
+        <div class="editor-footer">
+            <div class="editor-stats">
+                <span class="stat">Line: <span id="editorLine">1</span></span>
+                <span class="stat">Column: <span id="editorCol">1</span></span>
+            </div>
+            <div class="editor-actions">
+                <button class="icon-btn" id="formatCodeBtn" title="Format Code (Shift+Alt+F)">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <button class="icon-btn" id="clearCodeBtn" title="Clear All Code">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M3 4h10M6 4V3a1 1 0 011-1h2a1 1 0 011 1v1m0 0v10a1 1 0 01-1 1H4a1 1 0 01-1-1V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Test Results -->
+        <div class="test-results">
+            <div id="noTestsRun" class="empty-state">
+                <span>Run or submit code to see results</span>
+            </div>
+            <div id="testResults" class="results-container" style="display: none;">
+                <div id="testResultsDetails"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RIGHT PANEL: Live Leaderboard -->
+    <section class="leaderboard-panel">
+        <div class="panel-header">
+            <h3 class="panel-title">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M2 12h12v2H2zM3 9h3v3H3zM8 6h3v6H8zM13 3h3v9h-3z" stroke="currentColor" stroke-width="1" stroke-linejoin="round"/>
+                </svg>
+                Rankings
+            </h3>
+            <button class="icon-btn" id="leaderboardRefreshBtn" title="Refresh Rankings">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M2 8a6 6 0 1110.898-3M14 4v4h-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Your Rank Card -->
+        <div class="your-rank-card">
+            <div class="rank-title">Your Rank</div>
+            <div class="rank-display">
+                <span class="rank-number" id="yourRank">#--</span>
+                <span class="rank-score">Score: <span id="yourScore">0</span></span>
+            </div>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div class="leaderboard-table-wrapper">
+            <div id="leaderboardLoading" class="loading-spinner" style="display: none;">
+                <div class="spinner"></div>
+            </div>
+            
+            <table class="leaderboard-table">
+                <thead>
+                    <tr class="table-header">
+                        <th class="rank-col">Rank</th>
+                        <th class="name-col">Player</th>
+                        <th class="score-col">Score</th>
+                        <th class="time-col">Time</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <tr class="empty-row">
+                        <td colspan="4" class="empty-message">Loading ranki ngs...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</div>
+
+<!-- ========== BOTTOM CONTROL BAR ========== -->
+<div class="coding-bottom-bar">
+    <div class="control-buttons">
+        <button id="runCodeBtn" class="btn-control btn-run" title="Run Code (Ctrl+Enter)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M2 2v12l12-6L2 2z"/>
+            </svg>
+            Run Code
+        </button>
+        <button id="submitCodeBtn" class="btn-control btn-submit" title="Submit Code (Ctrl+S)">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 1l6 5v9H2V6l6-5z" stroke="currentColor" stroke-width="1" fill="none"/>
+                <path d="M6 8h4v4H6z" stroke="currentColor" stroke-width="1"/>
+            </svg>
+            Submit Code
+        </button>
+    </div>
+
+    <!-- Submission Feedback -->
+    <div id="submissionFeedback" class="submission-message" style="display: none;"></div>
+</div>
+
+<!-- ========== SCRIPTS ========== -->
+<!-- Core Modules -->
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/websocket.js"></script>
+<script src="js/codingRoom.js"></script>
+
+<!-- Keyboard Shortcuts -->
+<script>
+document.addEventListener('keydown', (e) => {
+    // Run Code: Ctrl+Enter
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('runCodeBtn')?.click();
+    }
+
+    // Submit Code: Ctrl+S
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        document.getElementById('submitCodeBtn')?.click();
+    }
+
+    // Format Code: Shift+Alt+F
+    if (e.shiftKey && e.altKey && e.key === 'F') {
+        e.preventDefault();
+        document.getElementById('formatCodeBtn')?.click();
+    }
+});
+</script>
+
+</body>
+</html>

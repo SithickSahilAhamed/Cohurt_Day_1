@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Room - CodeBattle Arena</title>
+    <link rel="icon" href="public/favicon.svg">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/coding-room.css">
+    <!-- Monaco Editor -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+    <style>
+        .editor-container { 
+            width: 100%; 
+            height: 100%; 
+        }
+    </style>
+</head>
+<body class="coding-room-body">
+    <!-- Top Navigation Bar -->
+    <div class="coding-top-bar">
+        <div class="top-bar-left">
+            <a href="tournament.html" class="back-link-compact">← Back to Tournament</a>
+            <div class="problem-header">
+                <div class="current-problem" id="currentProblem">Loading Problem...</div>
+                <div class="tournament-badge" id="tournamentBadge">Tournament #2</div>
+            </div>
+        </div>
+
+        <div class="top-bar-center">
+            <div class="countdown-timer">
+                <div class="timer-value" id="countdownTimer">05:00:00</div>
+                <div class="timer-label">Time Remaining</div>
+            </div>
+        </div>
+
+        <div class="top-bar-right">
+            <div class="connection-indicator">
+                <span class="indicator-dot" id="connectionIndicator"></span>
+                <span class="indicator-text" id="connectionText">Connecting...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Editor Layout -->
+    <div class="coding-main">
+        <!-- Left Panel - Problem Statement -->
+        <div class="problem-panel">
+            <div class="panel-header">
+                <h2>Problem Statement</h2>
+                <button class="panel-toggle" onclick="togglePanel('problem')">−</button>
+            </div>
+            <div class="panel-content" id="problemPanel">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <p>Loading problem...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Center Panel - IDE Editor -->
+        <div class="editor-panel">
+            <div class="panel-header">
+                <div class="editor-toolbar">
+                    <select id="languageSelect" class="language-select">
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="cpp">C++</option>
+                        <option value="java">Java</option>
+                    </select>
+
+                    <div class="toolbar-buttons">
+                        <button id="formatCodeBtn" class="btn btn-sm btn-secondary" title="Format Code">⟺ Format</button>
+                        <button id="resetCodeBtn" class="btn btn-sm btn-secondary" title="Reset Code">↻ Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="editor-container" id="editorContainer"></div>
+
+            <div class="editor-footer">
+                <span class="editor-status" id="editorStatus">Ready</span>
+                <span class="editor-line-col" id="editorLineCol">Line 1, Col 1</span>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="output-panel">
+                <div class="output-header">
+                    <button class="output-tab active" data-tab="output">Output</button>
+                    <button class="output-tab" data-tab="debug">Debug</button>
+                    <button id="clearOutputBtn" class="btn-icon">🗑 Clear</button>
+                </div>
+                <div class="output-content" id="outputContent">
+                    <div class="output-placeholder">Run your code to see output here...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Leaderboard & Info -->
+        <div class="leaderboard-panel">
+            <div class="panel-header">
+                <h3>Live Leaderboard</h3>
+                <button class="panel-toggle" onclick="togglePanel('leaderboard')">−</button>
+            </div>
+            <div class="panel-content">
+                <div class="leaderboard-entries" id="leaderboardPanel">
+                    <div class="loading-state">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Control Bar -->
+    <div class="coding-bottom-bar">
+        <div class="control-left">
+            <div class="status-message" id="statusMessage"></div>
+        </div>
+
+        <div class="control-center">
+            <!-- Progress indicators or additional info -->
+        </div>
+
+        <div class="control-right">
+            <button id="runCodeBtn" class="btn btn-secondary" onclick="runCode()">
+                ▶ Run Code
+            </button>
+            <button id="submitCodeBtn" class="btn btn-primary" onclick="submitCode()">
+                ✓ Submit Solution
+            </button>
+        </div>
+    </div>
+
+    <!-- Submission Modal -->
+    <div class="modal" id="submissionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Submission Result</h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="submissionContent">
+                <!-- Result will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config/config.js"></script>
+    <script src="js/utils/constants.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/services/apiService.js"></script>
+    <script src="js/services/socketService.js"></script>
+    <script src="js/services/authService.js"></script>
+    <script src="js/modules/codingRoomModule.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        let codingRoomModule;
+
+        // Initialize Monaco Editor require config
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' }});
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Check authentication
+            if (!authService.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            console.log('✅ Page loaded, initializing coding room...');
+
+            // Initialize coding room module
+            codingRoomModule = new CodingRoomModule(apiService, socketService, authService);
+            await codingRoomModule.initialize();
+
+            // Connect to WebSocket
+            socketService.connect();
+
+            // Update connection status
+            socketService.addEventListener('connected', () => {
+                updateConnectionStatus(true);
+            });
+            socketService.addEventListener('disconnected', () => {
+                updateConnectionStatus(false);
+            });
+        });
+
+        // UI Functions
+        function updateConnectionStatus(connected) {
+            const indicator = document.getElementById('connectionIndicator');
+            const text = document.getElementById('connectionText');
+            if (connected) {
+                indicator.classList.remove('disconnected');
+                indicator.classList.add('connected');
+                text.textContent = 'Connected';
+            } else {
+                indicator.classList.remove('connected');
+                indicator.classList.add('disconnected');
+                text.textContent = 'Disconnected';
+            }
+        }
+
+        function togglePanel(panelName) {
+            const panel = document.querySelector(`.${panelName}-panel`);
+            panel.classList.toggle('collapsed');
+        }
+
+        function runCode() {
+            codingRoomModule.runCode();
+        }
+
+        function submitCode() {
+            if (confirm('Are you sure you want to submit your solution?')) {
+                codingRoomModule.submitCode();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('submissionModal').classList.remove('active');
+        }
+
+        // Listen for tab changes in output section
+        document.querySelectorAll('.output-tab').forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                document.querySelectorAll('.output-tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                // Switch content based on tab
+            });
+        });
+
+        // Clear output
+        document.getElementById('clearOutputBtn')?.addEventListener('click', () => {
+            document.getElementById('outputContent').innerHTML = '<div class="output-placeholder">Output cleared</div>';
+        });
+    </script>
+</body>
+</html>
