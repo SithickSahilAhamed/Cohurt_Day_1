@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Premium Multiplayer Coding Battle - Compete in real-time coding contests">
+    <title>CodeBattle Arena - Multiplayer Coding Contests</title>
+    <link rel="icon" href="public/favicon.svg" type="image/svg+xml">
+    
+    <!-- Google Fonts - Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Premium Styles -->
+    <link rel="stylesheet" href="css/premium-theme.css">
+    <link rel="stylesheet" href="css/premium-layout.css">
+    <link rel="stylesheet" href="css/premium-animations.css">
+</head>
+<body class="premium-arena">
+    
+    <!-- ===== GLASSMORPHISM HEADER ===== -->
+    <header class="premium-header">
+        <div class="header-container">
+            <!-- Logo Section -->
+            <div class="header-left">
+                <a href="index.html" class="logo-link">
+                    <img src="public/assets/images/logo.svg" alt="CodeBattle" class="logo-icon">
+                    <span class="logo-text">CodeBattle</span>
+                </a>
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item">Contests</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item active" id="contestTitle">Weekly Challenge #42</span>
+                </div>
+            </div>
+
+            <!-- Center - Timer & Contest Info -->
+            <div class="header-center">
+                <div class="contest-info">
+                    <div class="timer-widget">
+                        <svg class="timer-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <div class="timer-display">
+                            <span class="timer-label">Time Remaining</span>
+                            <span class="timer-value" id="timerDisplay">02:00:00</span>
+                        </div>
+                    </div>
+                    <div class="contest-divider"></div>
+                    <div class="participants-widget">
+                        <svg class="participants-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <div class="participants-display">
+                            <span class="participants-label">Participants</span>
+                            <span class="participants-count" id="participantCount">342</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right - Connection & Profile -->
+            <div class="header-right">
+                <div class="connection-status-widget">
+                    <div class="status-indicator" id="connectionIndicator">
+                        <span class="status-dot"></span>
+                        <span class="status-text">Connected</span>
+                    </div>
+                </div>
+
+                <div class="code-stats-widget">
+                    <div class="code-stat">
+                        <span class="stat-label">Lines</span>
+                        <span class="stat-value" id="codeLines">0</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="code-stat">
+                        <span class="stat-label">Chars</span>
+                        <span class="stat-value" id="codeChars">0</span>
+                    </div>
+                </div>
+
+                <button class="user-profile-btn" id="userProfileBtn">
+                    <img src="public/assets/images/avatar-default.svg" alt="User Avatar" class="avatar-small">
+                    <span class="username-small" id="userNameDisplay">You</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== MAIN ARENA ===== -->
+    <main class="arena-container">
+        
+        <!-- LEFT PANEL - PROBLEM STATEMENT -->
+        <section class="panel problem-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <svg class="panel-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 8h18v2H3zm0 6h18v2H3zm0 6h18v2H3z"/>
+                    </svg>
+                    Problem
+                </h2>
+                <div class="panel-controls">
+                    <button class="panel-btn panel-collapse-btn" title="Collapse">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 9l6 6 6-6z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel-content problem-content">
+                <!-- Problem Meta -->
+                <div class="problem-meta">
+                    <span class="badge difficulty easy" id="problemDifficulty">Easy</span>
+                    <span class="badge acceptance" id="problemAcceptance">47% Pass Rate</span>
+                    <span class="badge solved" id="problemSolved">3.2K Solved</span>
+                </div>
+
+                <!-- Problem Title -->
+                <h3 class="problem-title" id="problemTitle">Two Sum</h3>
+
+                <!-- Problem Description -->
+                <div class="problem-section">
+                    <h4 class="section-title">📝 Description</h4>
+                    <div class="section-content problem-description" id="problemDescription">
+                        <p>Given an array of integers nums and an integer target, return the indices of the two numbers that add up to target.</p>
+                    </div>
+                </div>
+
+                <!-- Examples -->
+                <div class="problem-section">
+                    <h4 class="section-title">📌 Examples</h4>
+                    <div class="examples-container" id="examplesContainer">
+                        <!-- Examples loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Constraints -->
+                <div class="problem-section">
+                    <h4 class="section-title">⚙️ Constraints</h4>
+                    <div class="section-content constraints" id="problemConstraints">
+                        <!-- Constraints loaded dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CENTER PANEL - CODE EDITOR -->
+        <section class="panel editor-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <svg class="panel-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9.4 16.6L4.8 12l4.6-4.6M14.6 16.6l4.6-4.6-4.6-4.6"/>
+                    </svg>
+                    Code Editor
+                </h2>
+
+                <div class="panel-controls">
+                    <div class="language-selector-compact">
+                        <select id="languageSelect" class="language-dropdown" aria-label="Select programming language">
+                            <option value="javascript">JavaScript</option>
+                            <option value="python">Python</option>
+                            <option value="cpp">C++</option>
+                            <option value="java">Java</option>
+                            <option value="typescript">TypeScript</option>
+                            <option value="csharp">C#</option>
+                            <option value="go">Go</option>
+                            <option value="rust">Rust</option>
+                        </select>
+                    </div>
+
+                    <button class="panel-btn" id="formatBtn" title="Format Code (Shift+Alt+F)">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 5h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 12h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4zM3 19h4v4H3zm7 0h4v4h-4zm7 0h4v4h-4z"/>
+                        </svg>
+                    </button>
+                    
+                    <button class="panel-btn" id="clearBtn" title="Clear Code">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 6.4L17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6l1.4 1.4L12 13.4l5.6 5.6 1.4-1.4L13.4 12z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Monaco Editor Container -->
+            <div class="editor-wrapper">
+                <div id="monacoEditorContainer" class="monaco-container">
+                    <!-- Monaco will load here -->
+                </div>
+                
+                <!-- Fallback Editor -->
+                <textarea 
+                    id="codeEditorFallback" 
+                    class="fallback-editor"
+                    placeholder="// Your code here..."
+                    style="display: none;">// Write your solution...</textarea>
+
+                <!-- Editor Loading -->
+                <div class="editor-loading" id="editorLoading">
+                    <div class="loading-spinner">
+                        <div class="spinner-ring"></div>
+                    </div>
+                    <p>Loading Monaco Editor...</p>
+                </div>
+            </div>
+
+            <!-- Editor Toolbar -->
+            <div class="editor-toolbar">
+                <div class="toolbar-left">
+                    <label class="toolbar-checkbox">
+                        <input type="checkbox" id="wordWrapToggle" checked>
+                        <span>Word Wrap</span>
+                    </label>
+                </div>
+                <div class="toolbar-right">
+                    <span class="editor-position">
+                        Ln <span id="editorLine">1</span>, Col <span id="editorCol">1</span>
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- RIGHT PANEL - LEADERBOARD -->
+        <section class="panel leaderboard-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">
+                    <svg class="panel-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V11z"/>
+                        <polyline points="13 3 13 11 21 11"/>
+                    </svg>
+                    Live Leaderboard
+                </h2>
+                <div class="panel-controls">
+                    <button class="panel-btn" id="refreshLeaderboardBtn" title="Refresh">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M1 4v6h6M23 20v-6h-6"/>
+                            <path d="M20.49 9A9 9 0 0 0 5.64 5.64M3.51 15A9 9 0 0 0 18.36 18.36"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="leaderboard-content">
+                <!-- Your Rank Card -->
+                <div class="your-rank-card">
+                    <div class="rank-card-inner">
+                        <div class="rank-position">
+                            <span class="rank-badge-your">--</span>
+                        </div>
+                        <div class="rank-info">
+                            <span class="rank-label">Your Rank</span>
+                            <span class="rank-score">Score: <span id="yourScore">0</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard Table -->
+                <div class="leaderboard-scroll">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th class="col-rank">Rank</th>
+                                <th class="col-player">Player</th>
+                                <th class="col-score">Score</th>
+                                <th class="col-time">Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboardBody">
+                            <!-- Rows will be dynamically inserted -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Loading State -->
+                <div class="leaderboard-loading" id="leaderboardLoading" style="display: none;">
+                    <div class="loading-spinner">
+                        <div class="spinner-ring"></div>
+                    </div>
+                    <p>Loading rankings...</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== BOTTOM CONTROL BAR ===== -->
+    <footer class="control-bar">
+        <div class="control-container">
+            <!-- Test Results -->
+            <div class="control-section control-left">
+                <div class="test-results" id="testResults" style="display: none;">
+                    <span class="test-label">Test Results</span>
+                    <div id="testResultsContent" class="test-content">
+                        <!-- Results appear here -->
+                    </div>
+                </div>
+                <div id="noTestsMessage" class="no-tests">
+                    <span>Run tests to see results</span>
+                </div>
+            </div>
+
+            <!-- Submission Feedback -->
+            <div class="control-section control-center">
+                <div class="submission-feedback" id="submissionFeedback" style="display: none;">
+                    <span id="submissionMessage">Submission received...</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="control-section control-right">
+                <button id="runCodeBtn" class="btn btn-run" title="Run tests (Ctrl+Enter)">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                    <span class="btn-text">Run Code</span>
+                </button>
+
+                <button id="submitCodeBtn" class="btn btn-submit" title="Submit solution (Ctrl+Shift+Enter)">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                    <span class="btn-text">Submit</span>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== LOADING OVERLAY ===== -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="overlay-content">
+            <div class="loading-spinner large">
+                <div class="spinner-ring"></div>
+            </div>
+            <p id="loadingText">Loading...</p>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Settings ===== -->
+    <div class="modal" id="settingsModal" style="display: none;">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Settings</h3>
+                <button class="modal-close" id="closeSettingsBtn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 6.4L17.6 5 12 10.6 6.4 5 5 6.4 10.6 12 5 17.6l1.4 1.4L12 13.4l5.6 5.6 1.4-1.4L13.4 12z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h4>Editor</h4>
+                    <label class="setting-item">
+                        <input type="checkbox" id="darkModeToggle" checked>
+                        <span>Dark Mode</span>
+                    </label>
+                    <label class="setting-item">
+                        <input type="checkbox" id="autoSaveToggle" checked>
+                        <span>Auto-save Code</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <!-- Monaco Editor -->
+    <script src="js/monaco-loader.js"></script>
+    
+    <!-- Premium UI Components & Interactions -->
+    <script src="js/premium-ui.js"></script>
+</body>
+</html>
+
+    <!-- Core Libraries -->
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/websocket.js"></script>
+
+    <!-- Premium UI Components -->
+    <script src="js/premium-ui.js"></script>
+    <script src="js/editor.js"></script>
+    <script src="js/codingRoom.js"></script>
+
+    <!-- Keyboard Shortcuts -->
+    <script>
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('runCodeBtn')?.click();
+            }
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('submitCodeBtn')?.click();
+            }
+            if (e.shiftKey && e.altKey && e.key === 'F') {
+                e.preventDefault();
+                if (typeof monacoEditor !== 'undefined' && monacoEditor) {
+                    monacoEditor.formatCode();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

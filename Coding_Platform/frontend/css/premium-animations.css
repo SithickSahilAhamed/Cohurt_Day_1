@@ -1,0 +1,588 @@
+/* ========================================
+   PREMIUM ANIMATIONS - Smooth & Elegant
+   ======================================== */
+
+/* ========================================
+   KEYFRAME ANIMATIONS
+   ======================================== */
+
+/* Pulse Glow - Status Indicator */
+@keyframes pulse-glow {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+    }
+    50% {
+        opacity: 0.7;
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    }
+}
+
+/* Spinner Ring - Loading */
+@keyframes spin-ring {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Highlight Row - Leaderboard Update */
+@keyframes highlight-row {
+    0% {
+        background: rgba(34, 197, 94, 0.3);
+    }
+    100% {
+        background: transparent;
+    }
+}
+
+/* Slide In Up - Submission Feedback */
+@keyframes slide-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide Out Down - Fade Out */
+@keyframes slide-out-down {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+/* Glow Pulse - Button Hover */
+@keyframes glow-pulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.4),
+                    0 0 40px rgba(99, 102, 241, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(99, 102, 241, 0.6),
+                    0 0 60px rgba(99, 102, 241, 0.3);
+    }
+}
+
+/* Scale Up - Card Hover */
+@keyframes scale-up {
+    from {
+        transform: scale(0.98);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+/* Fade In - Page Load */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Slide Right - Panel Entry */
+@keyframes slide-right {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Bounce Pulse - Button Click */
+@keyframes bounce-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(0.95);
+    }
+}
+
+/* Shimmer - Loading Effect */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+/* Rotate Smooth - Icon Spin */
+@keyframes rotate-smooth {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Float - Timer Animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-2px);
+    }
+}
+
+/* ========================================
+   ELEMENT ANIMATIONS
+   ======================================== */
+
+/* Page Load Animation */
+.premium-arena {
+    animation: fade-in var(--transition-slow);
+}
+
+.panel {
+    animation: slide-right var(--transition-slow);
+}
+
+.panel:nth-child(2) {
+    animation-delay: 100ms;
+}
+
+.panel:nth-child(3) {
+    animation-delay: 200ms;
+}
+
+/* Header Animation */
+.premium-header {
+    animation: slide-in-down 0.5s ease-out;
+}
+
+@keyframes slide-in-down {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Timer Float Animation */
+.timer-value {
+    animation: float 2s ease-in-out infinite;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Button Hover - Ripple Effect */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.btn:hover::before {
+    opacity: 1;
+}
+
+.btn:active::before {
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+/* Leaderboard Row Highlight */
+.leaderboard-table tbody tr.highlight {
+    animation: highlight-row 1s ease-out;
+}
+
+.leaderboard-table tbody tr.highlight .rank-number,
+.leaderboard-table tbody tr.highlight .col-score {
+    animation: pulse-number 0.8s ease-out;
+}
+
+@keyframes pulse-number {
+    0% {
+        transform: scale(1);
+        color: var(--color-secondary-light);
+    }
+    50% {
+        transform: scale(1.1);
+        color: var(--color-secondary);
+    }
+    100% {
+        transform: scale(1);
+        color: var(--color-secondary-light);
+    }
+}
+
+/* Status Indicator Animation */
+.status-dot {
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Logo Hover Animation */
+.logo-link:hover .logo-icon {
+    animation: bounce-logo 0.6s ease-out;
+}
+
+@keyframes bounce-logo {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Panel Button Hover */
+.panel-btn:hover {
+    animation: button-glow 0.3s ease-out forwards;
+}
+
+@keyframes button-glow {
+    from {
+        box-shadow: none;
+    }
+    to {
+        box-shadow: 0 0 12px rgba(99, 102, 241, 0.4);
+    }
+}
+
+/* Dropdown Open Animation */
+.language-dropdown:focus-visible {
+    animation: scale-up 0.2s ease-out;
+}
+
+/* Example Card Hover */
+.example-item:hover {
+    animation: card-lift 0.3s ease-out forwards;
+}
+
+@keyframes card-lift {
+    from {
+        transform: translateY(0);
+        box-shadow: var(--shadow-md);
+    }
+    to {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+}
+
+/* ========================================
+   SMOOTH TRANSITIONS
+   ======================================== */
+
+/* Background & Border Transitions */
+button,
+input,
+textarea,
+select,
+.panel,
+.panel-btn,
+.badge,
+.example-item {
+    transition: background-color var(--transition-base),
+                border-color var(--transition-base),
+                box-shadow var(--transition-base);
+}
+
+/* Color Transitions */
+a,
+.logo-text,
+.timer-value,
+.stat-value {
+    transition: color var(--transition-base);
+}
+
+/* Transform Transitions */
+.btn,
+.panel-btn,
+.example-item,
+.logo-link,
+.player-cell,
+.rank-number {
+    transition: transform var(--transition-base);
+}
+
+/* Opacity Transitions */
+.status-dot,
+.panel::before,
+.btn::before {
+    transition: opacity var(--transition-base);
+}
+
+/* ========================================
+   THEME TRANSITIONS
+   ======================================== */
+
+/* Dark to Light Theme (if implemented) */
+body.light-mode {
+    transition: background-color var(--transition-slow),
+                color var(--transition-slow);
+}
+
+/* ========================================
+   FOCUS STATES - Accessibility
+   ======================================== */
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--size-radius-sm);
+}
+
+/* ========================================
+   REDUCED MOTION - Accessibility
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ========================================
+   DARK MODE SUPPORT
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Already in dark theme, no changes needed */
+}
+
+/* ========================================
+   STAGGER ANIMATIONS - Sequential Entry
+   ======================================== */
+
+.problem-section {
+    animation: slide-right var(--transition-slow);
+}
+
+.problem-section:nth-child(2) {
+    animation-delay: 50ms;
+}
+
+.problem-section:nth-child(3) {
+    animation-delay: 100ms;
+}
+
+.problem-section:nth-child(4) {
+    animation-delay: 150ms;
+}
+
+/* Leaderboard Rows */
+.leaderboard-table tbody tr {
+    animation: fade-in var(--transition-base);
+}
+
+/* Stagger delay for each row */
+.leaderboard-table tbody tr:nth-child(1) { animation-delay: 0ms; }
+.leaderboard-table tbody tr:nth-child(2) { animation-delay: 30ms; }
+.leaderboard-table tbody tr:nth-child(3) { animation-delay: 60ms; }
+.leaderboard-table tbody tr:nth-child(4) { animation-delay: 90ms; }
+.leaderboard-table tbody tr:nth-child(5) { animation-delay: 120ms; }
+.leaderboard-table tbody tr:nth-child(n+6) { animation-delay: 150ms; }
+
+/* ========================================
+   HOVER/ACTIVE STATE COMBINATIONS
+   ======================================== */
+
+/* Button with glow + scale */
+.btn-submit:hover,
+.btn-run:hover {
+    animation: glow-pulse 1.5s ease-in-out infinite;
+}
+
+/* Smooth scale on button click */
+.btn:active {
+    animation: bounce-pulse 0.3s ease-out;
+}
+
+/* ========================================
+   LOADING ANIMATION VARIANTS
+   ======================================== */
+
+/* Shimmer effect for skeleton loading */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        rgba(99, 102, 241, 0.1) 25%,
+        rgba(99, 102, 241, 0.2) 50%,
+        rgba(99, 102, 241, 0.1) 75%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+}
+
+/* Multiple spinner sizes */
+.loading-spinner.small .spinner-ring {
+    width: 24px;
+    height: 24px;
+    border-width: 2px;
+}
+
+.loading-spinner.medium .spinner-ring {
+    width: 40px;
+    height: 40px;
+    border-width: 3px;
+}
+
+.loading-spinner.large .spinner-ring {
+    width: 60px;
+    height: 60px;
+    border-width: 4px;
+}
+
+/* ========================================
+   INTERACTION FEEDBACK
+   ========================================
+
+/* Successful Submission Animation */
+.submission-feedback.success {
+    animation: slide-in-up 0.3s ease-out, slide-out-down 0.4s ease-out 3s;
+}
+
+/* Error State Animation */
+.submission-feedback.error {
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 20%, 30%, 40%, 50%, 60%, 70%, 80%, 90% { transform: translateX(-4px); }
+    15%, 25%, 35%, 45%, 55%, 65%, 75%, 85%, 95% { transform: translateX(4px); }
+}
+
+/* Success Badge Animation */
+.badge.success {
+    animation: scale-up 0.3s ease-out;
+}
+
+/* ========================================
+   MICRO-INTERACTIONS
+   ======================================== */
+
+/* Smooth Icon Rotation on Refresh */
+#refreshLeaderboardBtn:active svg {
+    animation: rotate-smooth 0.6s ease-out;
+}
+
+/* Smooth Code Stats Updates */
+#codeLines,
+#codeChars {
+    transition: transform 0.2s ease-out;
+}
+
+#codeLines.updated,
+#codeChars.updated {
+    animation: number-update 0.3s ease-out;
+}
+
+@keyframes number-update {
+    0% {
+        transform: scale(1) translateY(0);
+    }
+    50% {
+        transform: scale(1.1) translateY(-2px);
+    }
+    100% {
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ========================================
+   PAGE TRANSITIONS
+   ======================================== */
+
+/* Smooth page exit animation */
+.premium-arena.exit {
+    animation: fade-out 0.3s ease-out forwards;
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+/* ========================================
+   RESPONSIVE ANIMATIONS
+   ======================================== */
+
+/* Reduce animations on mobile for better performance */
+@media (max-width: 768px) {
+    .panel {
+        animation: none;
+    }
+
+    .leaderboard-table tbody tr {
+        animation: none;
+    }
+
+    .timer-value {
+        animation: none;
+    }
+
+    /* Keep important interactions */
+    .btn:active,
+    .panel-btn:hover,
+    .leaderboard-table tbody tr.highlight {
+        animation: inherit;
+    }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}

@@ -1,0 +1,20 @@
+<svg viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <circle cx="38" cy="30" r="12" stroke="url(#grad)" stroke-width="2" fill="none"/>
+  <path d="M30 24 L34 28 L30 32" stroke="#4F46E5" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M46 24 L42 28 L46 32" stroke="#7C3AED" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <path d="M34 36 L38 40 L42 36" stroke="url(#grad)" stroke-width="2" fill="none"/>
+  <text x="70" y="38" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="url(#grad)" filter="url(#glow)">Master Mind</text>
+</svg>

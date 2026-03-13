@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CodeBattle Arena</title>
+    <link rel="icon" href="public/favicon.svg">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="dashboard.html" class="navbar-logo">
+                <img src="public/assets/images/logo.svg" alt="CodeBattle" class="logo-img">
+                <span class="brand-text">CodeBattle</span>
+            </a>
+            
+            <nav class="navbar-nav">
+                <a href="dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="leaderboard.html" class="nav-link">Leaderboard</a>
+                <a href="tournament.html" class="nav-link">Contests</a>
+            </nav>
+
+            <div class="nav-profile">
+                <img src="public/assets/images/avatar-default.svg" alt="Profile" class="profile-avatar" id="profileBtn">
+                <div class="profile-menu" id="profileMenu">
+                    <a href="#" class="profile-menu-item">My Profile</a>
+                    <a href="#" class="profile-menu-item">Settings</a>
+                    <a href="login.html" class="profile-menu-item">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard-container">
+        <!-- Welcome Banner -->
+        <section class="welcome-banner">
+            <div class="banner-content">
+                <h1 class="banner-title">Welcome back, <span class="gradient-text" id="userName">Developer</span>!</h1>
+                <p class="banner-subtitle">Continue improving your coding skills and climb the global leaderboard</p>
+                <div class="banner-actions">
+                    <button class="btn btn-primary" onclick="startContest()">Start Coding</button>
+                    <button class="btn btn-secondary" onclick="viewTournaments()">Browse Contests</button>
+                </div>
+            </div>
+            <div class="banner-graphic">
+                <div class="graphic-element element-1"></div>
+                <div class="graphic-element element-2"></div>
+            </div>
+        </section>
+
+        <!-- User Stats -->
+        <section class="stats-section">
+            <h2>Your Statistics</h2>
+            <div id="user-stats" class="stats-placeholder">
+                <div class="loading-skeleton"></div>
+            </div>
+        </section>
+
+        <!-- Active Tournaments -->
+        <section class="tournaments-section">
+            <div class="section-header">
+                <h2>Active & Upcoming Contests</h2>
+                <a href="#" class="link-view-all">View All →</a>
+            </div>
+            <div id="tournaments-container" class="tournaments-grid">
+                <div class="loading-skeleton"></div>
+            </div>
+        </section>
+
+        <!-- Recent Contests -->
+        <section class="recent-section">
+            <div class="section-header">
+                <h2>Recent Contest History</h2>
+                <a href="#" class="link-view-all">View All →</a>
+            </div>
+            <div id="recent-contests" class="recent-contests-table">
+                <div class="loading-skeleton"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>CodeBattle</h4>
+                <p>Competitive coding platform for developers worldwide.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">API Docs</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Community</h4>
+                <ul>
+                    <li><a href="#">Discord</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 CodeBattle Arena. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config/config.js"></script>
+    <script src="js/utils/constants.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/services/apiService.js"></script>
+    <script src="js/services/socketService.js"></script>
+    <script src="js/services/authService.js"></script>
+    <script src="js/modules/dashboardModule.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        let dashboardModule;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+           // Check if user is authenticated
+            if (!authService.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Initialize dashboard
+            dashboardModule = new DashboardModule(apiService, socketService, authService);
+            await dashboardModule.initialize();
+
+            // Update user name
+            const user = authService.getUser();
+            if (user) {
+                document.getElementById('userName').textContent = user.name.split(' ')[0];
+            }
+        });
+
+        // Event handlers
+        function startContest() {
+            window.location.href = 'tournament.html';
+        }
+
+        function viewTournaments() {
+            window.location.href = 'tournament.html';
+        }
+
+        function joinTournament(tournamentId) {
+            dashboardModule.joinTournament(tournamentId);
+        }
+
+        // Profile menu toggle
+        document.getElementById('profileBtn')?.addEventListener('click', () => {
+            const menu = document.getElementById('profileMenu');
+            menu.classList.toggle('active');
+        });
+
+        // Close profile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            const profileBtn = document.getElementById('profileBtn');
+            const profileMenu = document.getElementById('profileMenu');
+            if (profileBtn && !profileBtn.contains(e.target) && profileMenu && !profileMenu.contains(e.target)) {
+                profileMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

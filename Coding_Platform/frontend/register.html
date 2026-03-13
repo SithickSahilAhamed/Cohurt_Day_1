@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - CodeBattle</title>
+    <link rel="icon" href="public/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-body">
+    <div class="auth-container">
+        <!-- Left Panel - Branding -->
+        <div class="auth-left">
+            <div class="auth-brand">
+                <img src="public/assets/images/logo.svg" alt="CodeBattle" class="auth-logo asset-glow-strong">
+                <h1 class="auth-brand-title">CodeBattle</h1>
+                <p class="auth-brand-subtitle">Compete. Code. Conquer.</p>
+            </div>
+            <div class="auth-benefits">
+                <div class="benefit-item">
+                    <img src="public/assets/icons/multiplayer.svg" alt="Multiplayer" class="benefit-icon asset-hover-scale">
+                    <span>Real-time Multiplayer Battles</span>
+                </div>
+                <div class="benefit-item">
+                    <img src="public/assets/icons/leaderboard.svg" alt="Leaderboard" class="benefit-icon asset-hover-scale">
+                    <span>Compete on Live Leaderboards</span>
+                </div>
+                <div class="benefit-item">
+                    <img src="public/assets/icons/trophy.svg" alt="Trophy" class="benefit-icon asset-hover-scale">
+                    <span>Earn Badges & Recognition</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Form -->
+        <div class="auth-right">
+            <div class="auth-form-container">
+                <h2 class="auth-title">Join CodeBattle</h2>
+                <p class="auth-subtitle">Create your account and start competing</p>
+
+                <form id="registerForm" class="auth-form">
+                    <!-- Username Field -->
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="form-input-wrapper">
+                            <input 
+                                type="text" 
+                                id="username" 
+                                name="username" 
+                                class="form-input" 
+                                placeholder="Choose a username"
+                                required
+                            >
+                            <span class="form-focus-border"></span>
+                        </div>
+                        <span class="form-error" id="usernameError"></span>
+                    </div>
+
+                    <!-- Email Field -->
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <div class="form-input-wrapper">
+                            <input 
+                                type="email" 
+                                id="email" 
+                                name="email" 
+                                class="form-input" 
+                                placeholder="your@email.com"
+                                required
+                            >
+                            <span class="form-focus-border"></span>
+                        </div>
+                        <span class="form-error" id="emailError"></span>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="form-input-wrapper">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-input" 
+                                placeholder="••••••••"
+                                required
+                            >
+                            <span class="form-focus-border"></span>
+                        </div>
+                        <div class="password-strength" id="passwordStrength"></div>
+                        <span class="form-error" id="passwordError"></span>
+                    </div>
+
+                    <!-- Confirm Password Field -->
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <div class="form-input-wrapper">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                class="form-input" 
+                                placeholder="••••••••"
+                                required
+                            >
+                            <span class="form-focus-border"></span>
+                        </div>
+                        <span class="form-error" id="confirmPasswordError"></span>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <label class="checkbox-label large">
+                        <input type="checkbox" id="termsCheckbox" name="terms" required>
+                        <span>I agree to the <a href="#" class="auth-link">Terms of Service</a> and <a href="#" class="auth-link">Privacy Policy</a></span>
+                    </label>
+                    <span class="form-error" id="termsError"></span>
+
+                    <!-- General Error -->
+                    <div class="form-error-alert" id="formError"></div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <span class="btn-text">Create Account</span>
+                        <span class="btn-glow"></span>
+                    </button>
+                </form>
+
+                <!-- Login Link -->
+                <p class="auth-footer-text">
+                    Already have an account? 
+                    <a href="login.html" class="auth-link">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <img src="public/assets/icons/loading-spinner.svg" alt="Loading" class="loading-spinner">
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Redirect if already authenticated
+            if (isAuthenticated()) {
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            const registerForm = document.getElementById('registerForm');
+            const usernameInput = document.getElementById('username');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const termsCheckbox = document.getElementById('termsCheckbox');
+            const formError = document.getElementById('formError');
+            const usernameError = document.getElementById('usernameError');
+            const emailError = document.getElementById('emailError');
+            const passwordError = document.getElementById('passwordError');
+            const confirmPasswordError = document.getElementById('confirmPasswordError');
+            const termsError = document.getElementById('termsError');
+            const passwordStrength = document.getElementById('passwordStrength');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            // Real-time validation
+            usernameInput.addEventListener('blur', validateUsername);
+            emailInput.addEventListener('blur', validateEmail);
+            passwordInput.addEventListener('input', validatePasswordStrength);
+            passwordInput.addEventListener('blur', validatePassword);
+            confirmPasswordInput.addEventListener('blur', validateConfirmPassword);
+
+            function validateUsername() {
+                usernameError.textContent = '';
+                const username = usernameInput.value.trim();
+                if (!username) {
+                    usernameError.textContent = 'Username is required';
+                    return false;
+                }
+                if (username.length < 3) {
+                    usernameError.textContent = 'Username must be at least 3 characters';
+                    return false;
+                }
+                if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+                    usernameError.textContent = 'Username can only contain letters, numbers, underscores, and hyphens';
+                    return false;
+                }
+                return true;
+            }
+
+            function validateEmail() {
+                emailError.textContent = '';
+                const email = emailInput.value.trim();
+                if (!email) {
+                    emailError.textContent = 'Email is required';
+                    return false;
+                }
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    emailError.textContent = 'Please enter a valid email';
+                    return false;
+                }
+                return true;
+            }
+
+            function validatePasswordStrength() {
+                const password = passwordInput.value;
+                let strength = 0;
+                let feedback = '';
+
+                if (password.length >= 8) strength++;
+                if (password.length >= 12) strength++;
+                if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+                if (/\d/.test(password)) strength++;
+                if (/[^a-zA-Z\d]/.test(password)) strength++;
+
+                const strengthLevels = ['Weak', 'Fair', 'Good', 'Strong', 'Very Strong'];
+                const strengthColors = ['#ff4444', '#ffaa00', '#ffff00', '#88ff00', '#00ff88'];
+
+                if (password.length > 0) {
+                    feedback = strengthLevels[Math.min(strength - 1, 4)] || 'Weak';
+                    passwordStrength.textContent = `Strength: ${feedback}`;
+                    passwordStrength.style.color = strengthColors[Math.min(strength - 1, 4)];
+                } else {
+                    passwordStrength.textContent = '';
+                }
+            }
+
+            function validatePassword() {
+                passwordError.textContent = '';
+                const password = passwordInput.value;
+                if (!password) {
+                    passwordError.textContent = 'Password is required';
+                    return false;
+                }
+                if (password.length < 8) {
+                    passwordError.textContent = 'Password must be at least 8 characters';
+                    return false;
+                }
+                return true;
+            }
+
+            function validateConfirmPassword() {
+                confirmPasswordError.textContent = '';
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                if (!confirmPassword) {
+                    confirmPasswordError.textContent = 'Please confirm your password';
+                    return false;
+                }
+                if (password !== confirmPassword) {
+                    confirmPasswordError.textContent = 'Passwords do not match';
+                    return false;
+                }
+                return true;
+            }
+
+            // Form submission
+            registerForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                formError.textContent = '';
+
+                // Validate all fields
+                if (!validateUsername() || !validateEmail() || !validatePassword() || !validateConfirmPassword()) {
+                    return;
+                }
+
+                if (!termsCheckbox.checked) {
+                    termsError.textContent = 'You must accept the terms and conditions';
+                    return;
+                }
+
+                const username = usernameInput.value.trim();
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+
+                loadingOverlay.classList.add('active');
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/register`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, email, password })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Registration failed');
+                    }
+
+                    // Store JWT token and user data
+                    localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+
+                    // Redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                } catch (error) {
+                    formError.textContent = error.message || 'Registration failed. Please try again.';
+                    console.error('Registration error:', error);
+                } finally {
+                    loadingOverlay.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

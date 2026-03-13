@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Leaderboard - CodeBattle Arena</title>
+    <link rel="icon" href="public/favicon.svg">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/leaderboard.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="navbar-container">
+            <a href="dashboard.html" class="navbar-logo">
+                <img src="public/assets/images/logo.svg" alt="CodeBattle" class="logo-img">
+                <span class="brand-text">CodeBattle</span>
+            </a>
+            
+            <nav class="navbar-nav">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+                <a href="leaderboard.html" class="nav-link active">Leaderboard</a>
+                <a href="tournament.html" class="nav-link">Contests</a>
+            </nav>
+
+            <div class="nav-profile">
+                <img src="public/assets/images/avatar-default.svg" alt="Profile" class="profile-avatar" id="profileBtn">
+                <div class="profile-menu" id="profileMenu">
+                    <a href="#" class="profile-menu-item">My Profile</a>
+                    <a href="#" class="profile-menu-item">Settings</a>
+                    <a href="login.html" class="profile-menu-item">Logout</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="leaderboard-container">
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1 class="page-title">Global Leaderboard</h1>
+            <p class="page-subtitle">Compete with developers worldwide</p>
+        </section>
+
+        <!-- My Position Card -->
+        <section class="my-position-section" id="myPositionSection" style="display: none;">
+            <div class="my-position-card">
+                <div class="position-rank">
+                    <span class="rank-number" id="myRank">#42</span>
+                </div>
+                <div class="position-info">
+                    <div class="position-username" id="myUsername">You</div>
+                    <div class="position-stats">
+                        <span id="myScore">0</span> points •
+                        <span id="myContests">0</span> contests
+                    </div>
+                </div>
+                <div class="position-trend">
+                    <span class="trend-up" id="myTrend">↑ 5 spots this week</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard Controls -->
+        <section class="leaderboard-controls">
+            <div class="control-group">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search players...">
+                <select id="filterSelect" class="filter-select">
+                    <option value="global">Global</option>
+                    <option value="region">Your Region</option>
+                    <option value="followed">Followed Players</option>
+                </select>
+                <select id="timeRangeSelect" class="filter-select">
+                    <option value="all-time">All Time</option>
+                    <option value="this-month">This Month</option>
+                    <option value="this-week">This Week</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Leaderboard Table -->
+        <section class="leaderboard-section">
+            <div class="table-wrapper">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th class="col-rank">Rank</th>
+                            <th class="col-player">Player</th>
+                            <th class="col-rating">Rating</th>
+                            <th class="col-score">Score</th>
+                            <th class="col-contests">Contests</th>
+                            <th class="col-winrate">Win Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <tr class="loading-row">
+                            <td colspan="6" class="loading-cell">
+                                <div class="loading-spinner"></div>
+                                <p>Loading leaderboard...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="paginationControls"></div>
+        </section>
+
+        <!-- Stats Summary -->
+        <section class="stats-summary">
+            <h2>Leaderboard Stats</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-details">
+                        <div class="stat-label">Total Players</div>
+                        <div class="stat-value" id="totalPlayers">12,543</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-details">
+                        <div class="stat-label">Contests Held</div>
+                        <div class="stat-value" id="totalContests">284</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-details">
+                        <div class="stat-label">Avg. Rating</div>
+                        <div class="stat-value" id="avgRating">1,842</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-details">
+                        <div class="stat-label">Top Score</div>
+                        <div class="stat-value" id="topScore">125,400</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h4>CodeBattle</h4>
+                <p>Competitive coding platform for developers worldwide.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">API Docs</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Community</h4>
+                <ul>
+                    <li><a href="#">Discord</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 CodeBattle Arena. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- User Profile Modal -->
+    <div class="modal" id="userProfileModal">
+        <div class="modal-content profile-modal">
+            <div class="modal-header">
+                <h2 id="profileName">Player Name</h2>
+                <button class="modal-close" onclick="closeProfileModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="profileContent">
+                <!-- Profile content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config/config.js"></script>
+    <script src="js/utils/constants.js"></script>
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/services/apiService.js"></script>
+    <script src="js/services/socketService.js"></script>
+    <script src="js/services/authService.js"></script>
+    <script src="js/modules/leaderboardModule.js"></script>
+    <script src="js/app.js"></script>
+
+    <script>
+        let leaderboardModule;
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            // Check authentication
+            if (!authService.isAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            console.log('✅ Initializing leaderboard...');
+
+            // Initialize leaderboard module
+            leaderboardModule = new LeaderboardModule(apiService, socketService, authService);
+            await leaderboardModule.initialize();
+
+            // Connect to WebSocket for real-time updates
+            socketService.connect();
+
+            // Show user's position
+            displayUserPosition();
+        });
+
+        function displayUserPosition() {
+            const user = authService.getUser();
+            if (user && leaderboardModule.userPosition) {
+                document.getElementById('myPositionSection').style.display = 'block';
+                document.getElementById('myRank').textContent = '#' + leaderboardModule.userPosition.rank;
+                document.getElementById('myUsername').textContent = user.name;
+                document.getElementById('myScore').textContent = leaderboardModule.userPosition.score;
+                document.getElementById('myContests').textContent = leaderboardModule.userPosition.totalContests;
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchInput')?.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('#leaderboardBody tr');
+            rows.forEach(row => {
+                const playerName = row.querySelector('.col-player')?.textContent.toLowerCase() || '';
+                row.style.display = playerName.includes(query) ? '' : 'none';
+            });
+        });
+
+        // Filter controls
+        document.getElementById('filterSelect')?.addEventListener('change', async (e) => {
+            if (leaderboardModule) {
+                leaderboardModule.filterMode = e.target.value;
+                await leaderboardModule.loadGlobalLeaderboard();
+            }
+        });
+
+        // Close profile modal
+        function closeProfileModal() {
+            document.getElementById('userProfileModal').classList.remove('active');
+        }
+
+        // Profile menu toggle
+        document.getElementById('profileBtn')?.addEventListener('click', () => {
+            const menu = document.getElementById('profileMenu');
+            menu.classList.toggle('active');
+        });
+
+        // Close menus when clicking outside
+        document.addEventListener('click', (e) => {
+            const profileBtn = document.getElementById('profileBtn');
+            const profileMenu = document.getElementById('profileMenu');
+            if (profileBtn && !profileBtn.contains(e.target) && profileMenu && !profileMenu.contains(e.target)) {
+                profileMenu.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
